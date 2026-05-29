@@ -1,0 +1,33 @@
+# Source files (we ship bundled dist/)
+src/
+test/
+out-e2e/
+
+# Config files
+.vscode/
+.claude/
+.github/
+tsconfig.json
+vitest.config.ts
+.vscode-test.mjs
+
+# Development files
+node_modules/
+*.vsix
+README.md
+README.marketplace.md
+.env
+.env.*
+.gitignore
+AGENTS.md
+AGENTS.override.md
+CLAUDE.md
+DAEMON_REBUILD_PLAN.html
+DAEMON_REDESIGN_PLAN.md
+MCP_TOOL_GUIDE.html
+docs/
+scripts/
+
+# Build artifacts
+**/*.map
+dist/daemon.js

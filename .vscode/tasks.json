@@ -1,0 +1,28 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "npm",
+      "script": "build",
+      "group": "build",
+      "problemMatcher": [],
+      "label": "npm: build"
+    },
+    {
+      "type": "npm",
+      "script": "watch",
+      "group": "build",
+      "problemMatcher": [],
+      "isBackground": true,
+      "label": "npm: watch"
+    },
+    {
+      "type": "npm",
+      "script": "build:e2e",
+      "group": "build",
+      "problemMatcher": [],
+      "label": "npm: build:e2e",
+      "dependsOn": "npm: build"
+    }
+  ]
+}

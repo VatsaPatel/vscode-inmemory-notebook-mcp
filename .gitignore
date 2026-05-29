@@ -1,0 +1,42 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+out/
+out-e2e/
+*.vsix
+
+# VS Code Test
+.vscode-test/
+
+# E2E test fixtures (large notebooks)
+test/e2e/fixtures/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Environment
+.env
+.env.local
+
+# TypeScript
+*.tsbuildinfo
+
+# Test coverage
+coverage/
+
+# IA
+.claude/
+.cursor/

@@ -1,0 +1,134 @@
+{
+  "name": "notebook-mcp-for-vscode",
+  "displayName": "Notebook MCP for VS Code",
+  "description": "Fully featured, reliable Jupyter MCP for live VS Code notebooks. Read, edit, run, stream outputs, save, export, and work across notebooks with explicit URI targeting.",
+  "version": "0.5.5",
+  "publisher": "vatsapatel",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/VatsaPatel/vscode-inmemory-notebook-mcp"
+  },
+  "homepage": "https://github.com/VatsaPatel/vscode-inmemory-notebook-mcp#readme",
+  "bugs": {
+    "url": "https://github.com/VatsaPatel/vscode-inmemory-notebook-mcp/issues"
+  },
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Notebooks",
+    "Data Science",
+    "AI"
+  ],
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "jupyter",
+    "notebook",
+    "ipynb",
+    "agent",
+    "data science",
+    "python",
+    "kernel"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "notebook-mcp-for-vscode.startServer",
+        "title": "Start Notebook MCP Server",
+        "category": "Notebook MCP"
+      },
+      {
+        "command": "notebook-mcp-for-vscode.copyMcpUrl",
+        "title": "Copy MCP URL",
+        "category": "Notebook MCP"
+      },
+      {
+        "command": "notebook-mcp-for-vscode.copyNotebookUri",
+        "title": "Copy Current Notebook URI",
+        "category": "Notebook MCP"
+      },
+      {
+        "command": "notebook-mcp-for-vscode.showDaemonStatus",
+        "title": "Show Notebook MCP Daemon Status",
+        "category": "Notebook MCP"
+      },
+      {
+        "command": "notebook-mcp-for-vscode.showActivity",
+        "title": "Show Notebook MCP Activity",
+        "category": "Notebook MCP"
+      },
+      {
+        "command": "notebook-mcp-for-vscode.restartDaemon",
+        "title": "Restart Notebook MCP Daemon",
+        "category": "Notebook MCP"
+      },
+      {
+        "command": "notebook-mcp-for-vscode.stopDaemon",
+        "title": "Stop Notebook MCP Daemon",
+        "category": "Notebook MCP"
+      }
+    ],
+    "configuration": {
+      "title": "Notebook MCP for VS Code",
+      "properties": {
+        "notebook-mcp-for-vscode.port": {
+          "type": "number",
+          "default": 49777,
+          "minimum": 1024,
+          "maximum": 65535,
+          "description": "Port number for the local Notebook MCP daemon."
+        },
+        "notebook-mcp-for-vscode.allowActiveNotebookWrites": {
+          "type": "boolean",
+          "default": false,
+          "description": "Compatibility fallback for local experiments: allow write and execution tools without notebook_uri to target the active notebook in this window. Prefer explicit notebook_uri."
+        }
+      }
+    }
+  },
+  "extensionDependencies": [
+    "ms-toolsai.jupyter"
+  ],
+  "scripts": {
+    "vscode:prepublish": "npm run build",
+    "build": "npm run build:extension && npm run build:daemon",
+    "build:extension": "esbuild src/extension.ts --bundle --outfile=dist/extension.js --external:vscode --format=cjs --platform=node --sourcemap",
+    "build:daemon": "esbuild src/daemon/index.ts --bundle --outfile=dist/daemon.js --format=cjs --platform=node --sourcemap",
+    "watch": "npm run build:extension -- --watch",
+    "lint": "eslint src --ext ts",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "npm run build && npm run build:e2e && vscode-test",
+    "test:e2e:watch": "npm run build:e2e && vscode-test --watch 'out-e2e/**/*.js'",
+    "build:e2e": "tsc -p ./test/e2e/tsconfig.json",
+    "package": "vsce package",
+    "package:vsix": "vsce package --readme-path README.marketplace.md --no-rewrite-relative-links -o notebook-mcp-for-vscode-0.5.5.vsix && node scripts/sanitize-vsix-package.js notebook-mcp-for-vscode-0.5.5.vsix",
+    "publish:verify": "vsce verify-pat vatsapatel",
+    "publish:marketplace": "vsce publish --packagePath notebook-mcp-for-vscode-0.5.5.vsix"
+  },
+  "devDependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^20.11.0",
+    "@types/vscode": "^1.85.0",
+    "@types/ws": "^8.18.1",
+    "@vscode/test-cli": "^0.0.12",
+    "@vscode/test-electron": "^2.5.2",
+    "@vscode/vsce": "^3.9.1",
+    "esbuild": "^0.20.0",
+    "mocha": "^11.7.5",
+    "typescript": "^5.4.0",
+    "vitest": "^4.0.16"
+  },
+  "dependencies": {
+    "ws": "^8.20.0",
+    "zod": "^3.23.8"
+  },
+  "icon": "images/icon.png"
+}

@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Notebook MCP Tool Guide</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f6f7f8;
+      --panel: #fff;
+      --text: #172026;
+      --muted: #58656d;
+      --line: #dbe1e5;
+      --accent: #0f766e;
+      --danger: #b42318;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    body { margin: 0; background: var(--bg); color: var(--text); line-height: 1.45; }
+    header { background: #17313a; color: white; padding: 36px 28px; }
+    main { max-width: 1120px; margin: 0 auto; padding: 28px 20px 60px; }
+    h1 { margin: 0 0 10px; font-size: 44px; letter-spacing: 0; }
+    h2 { margin: 34px 0 14px; font-size: 24px; }
+    h3 { margin: 0 0 8px; font-size: 18px; }
+    p { margin: 0 0 12px; color: var(--muted); }
+    .wrap { max-width: 1120px; margin: 0 auto; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
+    .card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 16px; }
+    code { background: #eef2f4; border: 1px solid var(--line); border-radius: 4px; padding: 1px 4px; }
+    pre { background: #111820; color: #e7edf2; border-radius: 8px; padding: 14px; overflow: auto; }
+    table { width: 100%; border-collapse: collapse; background: var(--panel); border: 1px solid var(--line); }
+    th, td { text-align: left; border-bottom: 1px solid var(--line); padding: 10px; vertical-align: top; }
+    th { background: #eef2f4; }
+    .danger { color: var(--danger); font-weight: 650; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <h1>Notebook MCP Tool Guide</h1>
+      <p>Current compact Python-focused surface. Connect once to the global daemon URL, then pass <code>notebook_uri</code> on every notebook tool call.</p>
+    </div>
+  </header>
+  <main>
+    <section>
+      <h2>Default Workflow</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>Explore</h3>
+          <p>Call <code>notebook_status</code>, choose a <code>notebook_uri</code>, then call <code>notebook_read</code>. The read response includes source, outputs, lock state, and <code>cell_id</code> anchors.</p>
+          <p>Fallback ids like <code>index:3</code> are only stable until cells are inserted, deleted, or moved.</p>
+        </div>
+        <div class="card">
+          <h3>Edit</h3>
+          <p>Use <code>notebook_edit_cells</code> with <code>before_cell_id</code> or <code>after_cell_id</code>. Avoid raw indexes when an anchor is available.</p>
+        </div>
+        <div class="card">
+          <h3>Run Long Jobs</h3>
+          <p>For Spark/Python jobs, insert a visible cell, call <code>notebook_run</code> with a short <code>wait_ms</code>, then poll <code>notebook_operation</code>.</p>
+        </div>
+        <div class="card">
+          <h3>Protect Work</h3>
+          <p>Use <code>notebook_lock_cell</code> for human-protected cells. Generic metadata mutation is not part of the simplified surface.</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Tool Surface</h2>
+      <table>
+        <thead><tr><th>Tool</th><th>Purpose</th></tr></thead>
+        <tbody>
+          <tr><td><code>notebook_help</code></td><td>Use when unsure; returns short workflow recipes.</td></tr>
+          <tr><td><code>notebook_status</code></td><td>Use first; shows daemon state and open notebook URIs.</td></tr>
+          <tr><td><code>notebook_open</code> / <code>notebook_create</code></td><td>Use when the notebook is not open, or a fresh Python notebook is needed.</td></tr>
+          <tr><td><code>notebook_read</code></td><td>Use first for notebook context or selected cells. No structured outline; re-read after reorders.</td></tr>
+          <tr><td><code>notebook_search</code></td><td>Use to find text or replace with dry-run first.</td></tr>
+          <tr><td><code>notebook_edit_cells</code></td><td>Use for insert/update/delete/type changes; prefer <code>cell_id</code> anchors.</td></tr>
+          <tr><td><code>notebook_move_cells</code></td><td>Use to reorder cells as a block; call <code>notebook_read</code> afterward.</td></tr>
+          <tr><td><code>notebook_clear_outputs</code></td><td>Use to clear one cell or the whole notebook.</td></tr>
+          <tr><td><code>notebook_lock_cell</code></td><td>Use to protect/unprotect agent-edit access. Not a general metadata tool.</td></tr>
+          <tr><td><code>notebook_save</code> / <code>notebook_export</code></td><td>Use to persist notebook work or produce markdown/Python/HTML output.</td></tr>
+          <tr><td><code>notebook_run</code></td><td>Use for visible cell/range/all execution; <code>scope:"code"</code> is only for throwaway probes.</td></tr>
+          <tr><td><code>notebook_operation</code></td><td>Use to list/get/wait/stream outputs. It never cancels.</td></tr>
+          <tr><td><code>notebook_cancel_execution</code></td><td><span class="danger">Use only to stop</span> a running operation.</td></tr>
+          <tr><td><code>notebook_get_kernel_info</code></td><td>Use for Python kernel state and best-effort context; prefer visible cells for variable inspection.</td></tr>
+          <tr><td><code>notebook_kernel_control</code></td><td><span class="danger">Use only to restart or interrupt</span> the kernel.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>Examples</h2>
+      <h3>Read Then Insert</h3>
+      <pre>{
+  "tool": "notebook_read",
+  "arguments": { "notebook_uri": "file:///path/to/notebook.ipynb", "include_outputs": "summary", "response_format": "json" }
+}</pre>
+      <pre>{
+  "tool": "notebook_edit_cells",
+  "arguments": {
+    "operations": [{
+      "op": "insert",
+      "notebook_uri": "file:///path/to/notebook.ipynb",
+      "after_cell_id": "index:3",
+      "cells": [{ "type": "code", "content": "df.explain('formatted')" }]
+    }],
+    "response_format": "json"
+  }
+}</pre>
+
+      <h3>Run And Stream</h3>
+      <pre>{
+  "tool": "notebook_run",
+  "arguments": { "notebook_uri": "file:///path/to/notebook.ipynb", "scope": "cell", "cell_id": "index:4", "wait_ms": 1000, "response_format": "json" }
+}</pre>
+      <pre>{
+  "tool": "notebook_operation",
+  "arguments": { "operation_id": "op_...", "wait_ms": 0, "include_partial": true, "response_format": "json" }
+}</pre>
+    </section>
+  </main>
+</body>
+</html>
