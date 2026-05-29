@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.5.6] - 2026-05-29
+
+### Fixed
+
+- Fixed Marketplace README image rendering by using the now-published repository image asset.
+
 ## [0.5.3] - 2026-05-29
 
 ### Changed

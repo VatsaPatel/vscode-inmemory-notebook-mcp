@@ -1,7 +1,7 @@
 # Notebook MCP for VS Code
 
 <p align="center">
-  <img src="https://vatsapatel.gallerycdn.vsassets.io/extensions/vatsapatel/notebook-mcp-for-vscode/0.5.4/1780090257992/Microsoft.VisualStudio.Services.Icons.Default" alt="Notebook MCP for VS Code" width="220">
+  <img src="images/header.png" alt="Notebook MCP for VS Code" width="720">
 </p>
 
 Notebook MCP for VS Code is a local MCP bridge for live Jupyter notebooks in VS Code. It lets coding agents read, edit, reorder, run, stream outputs, save, and export notebooks through the VS Code Notebook API with explicit notebook URI targeting.

@@ -2,7 +2,7 @@
   "name": "notebook-mcp-for-vscode",
   "displayName": "Notebook MCP for VS Code",
   "description": "Fully featured, reliable Jupyter MCP for live VS Code notebooks. Read, edit, run, stream outputs, save, export, and work across notebooks with explicit URI targeting.",
-  "version": "0.5.5",
+  "version": "0.5.6",
   "publisher": "vatsapatel",
   "license": "MIT",
   "repository": {
@@ -108,9 +108,9 @@
     "test:e2e:watch": "npm run build:e2e && vscode-test --watch 'out-e2e/**/*.js'",
     "build:e2e": "tsc -p ./test/e2e/tsconfig.json",
     "package": "vsce package",
-    "package:vsix": "vsce package --readme-path README.marketplace.md --no-rewrite-relative-links -o notebook-mcp-for-vscode-0.5.5.vsix && node scripts/sanitize-vsix-package.js notebook-mcp-for-vscode-0.5.5.vsix",
+    "package:vsix": "vsce package --readme-path README.marketplace.md -o notebook-mcp-for-vscode-0.5.6.vsix && node scripts/sanitize-vsix-package.js notebook-mcp-for-vscode-0.5.6.vsix",
     "publish:verify": "vsce verify-pat vatsapatel",
-    "publish:marketplace": "vsce publish --packagePath notebook-mcp-for-vscode-0.5.5.vsix"
+    "publish:marketplace": "vsce publish --packagePath notebook-mcp-for-vscode-0.5.6.vsix"
   },
   "devDependencies": {
     "@modelcontextprotocol/sdk": "^1.29.0",
